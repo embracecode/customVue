@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box_wrap {
+            height: 200px;
+            width: 800px;
+            overflow: hidden;
+        }
+        .box {
+            float: left;
+            height: 200px;
+            width: 200px;
+            line-height: 200px;
+            font-size: 24px;
+            font-weight: 400;
+            text-align: center;
+        }
+        .box1 {
+            background: red;
+
+        }
+        .box2 {
+            background: green;
+            
+        }
+        .box3 {
+            background: yellow;
+
+        }
+        .box4 {
+            background: blue;
+
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="box_wrap">
+            <div class="box box1" v-if="showBox1">box1</div>
+            <div class="box box2" v-show="showBox2">box2</div>
+            <div class="box box3" v-if="showBox3">box3</div>
+            <div class="box box4" v-show="showBox4">box4</div>
+        </div>
+        <button @click="showdom1">box1</button>
+        <button @click="showdom2">box2</button>
+        <button @click="showdom3">box3</button>
+        <button @click="showdom4">box4</button>
+    </div>
+</body>
+<script src="./config.js"></script>
+<script>
+    new App({
+        el: '#app',
+        data: {
+            showBox1: false,
+            showBox2: false,
+            showBox3: false,
+            showBox4: false
+        },
+        methods: {
+            showdom1(){
+                console.log(this.showBox1, 'showBox1');
+                this.showBox1 = !this.showBox1
+            },
+            showdom2(){
+                console.log(this.showBox2, 'showBox2');
+                this.showBox2 = !this.showBox2
+            },
+            showdom3(){
+                console.log(this.showBox3, 'showBox3');
+                this.showBox3 = !this.showBox3
+            },
+            showdom4(){
+                console.log(this.showBox4, 'showBox4');
+                this.showBox4 = !this.showBox4
+            },
+        }
+    })
+</script>
+</html>
