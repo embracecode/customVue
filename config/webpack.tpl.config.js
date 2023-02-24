@@ -1,4 +1,4 @@
-const { resolve } = require('path')
+const { resolve, join } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
@@ -24,12 +24,18 @@ module.exports = {
                         }
                     }
                 ]
+            },
+            {
+                test: /\.css$/,
+                loader: ['style-loader', 'css-loader']
             }
         ]
     },
     devServer: {
-        port: 5052
+        port: 5052,
+        contentBase: [resolve(__dirname, '../template/assets')]
     },
+    devtool: 'source-map',
     plugins: [
         new HtmlWebpackPlugin({
             template: resolve(__dirname, '../template/index.html')

@@ -3,7 +3,7 @@ const { tplReplace } = require('./utils')
 // webpack  内置模块 获取options配置
 const { getOptions } = require('loader-utils')
 function TplLoader(source){
-    source = source.replace(/\s+/g, '')
+    source = source.replace(/[\r\n]/g, '')
     const { log } = getOptions(this)
 
     const _log = log ? `console.log('compliled the file which is from ${this.resourcePath}')` : ''

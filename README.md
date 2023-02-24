@@ -1,3 +1,6 @@
+###### 由于本项目时自己写着玩 不要在意依赖安装
+
+
 ### 1. 工程化vue
 
 ####  原项目目录只有src/App.vue public/index.html 及 main.js 运行run devvue

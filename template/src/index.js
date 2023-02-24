@@ -1,5 +1,5 @@
 import tpl from './info.tpl'
-
+import '../assets/index.css'
 
 const app = document.querySelector('#app')
 
