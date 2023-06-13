@@ -16,12 +16,24 @@ export function updata (vm, key) {
 }
 function _render (vm, node, info) {
     // info {key: 'count', express: 'count + 1'} 
-    const { express, beforeValue, afterValue } = info
+    // console.log(info, 'info');
+    // let _r
+    // info.forEach(item => {
+    //     _r = new Function('vm', 'node',`
+    //         with (vm) {
+    //             node.textContent = ${item.express}
+    //         }
+    //     `)
+    //     _r(vm, node)
+    // })
     // const r = new Function('vm', 'node',`
     //     with (vm) {
     //         node.textContent = ${beforeValue}${express}${afterValue};
     //     }
     // `)
+
+    // 第一版 单个匹配表达式 xxxx{{ a }} xxxx 情况
+    const { express, beforeValue, afterValue } = info
     const r = new Function('vm', 'node', 'beforeValue', 'afterValue',`
         {
             let a = '';
@@ -32,4 +44,5 @@ function _render (vm, node, info) {
         }
     `)
     r(vm, node, beforeValue, afterValue)
+    
 }

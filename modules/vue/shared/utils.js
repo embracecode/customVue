@@ -1,6 +1,6 @@
 
 // 匹配plus（1） 函数名及参数都能匹配到 ["plus('1')", 'plus', "'1'", index: 0, input: "plus('1')", groups: undefined]
-const regPropIsArgs = /(.+?)\((.+?)\)/
+const regPropIsArgs = /(.+?)\((.*?)\)/
 // 匹配参数里面是否是字符串 如果是字符串的时候 ["'1'", '1', index: 0, input: "'1'", groups: undefined]
 const regIsStr = /[\'|\"](.+?)[\'|\"]/g
 
@@ -18,8 +18,8 @@ export function getFirstNodes(nodes) {
 
 // 检查获取的表达式里面是否有data的值
 export function checkExpressIsIncludesData(data, express) {
-
     for(let key in data){
+        console.log(key, express, 'express', key === express);
         if (express.includes(key) && express !== key) {
             return {
                 key,
@@ -30,8 +30,6 @@ export function checkExpressIsIncludesData(data, express) {
                 key,
                 express: key
             }
-        } else {
-            return null
         }
     }
 }
@@ -39,7 +37,6 @@ export function checkExpressIsIncludesData(data, express) {
 // 检查获取的表达式里面是否有data的值和文本
 export function checkExpressIsIncludesDataAndText(data, express, beforeValue, afterValue){
     for(let key in data){
-        console.log(data, express, key, 'rucan');
         // express  是node节点里面的表达式  判断 表达式里面是否包含
         if (express.includes(key) && express !== key) {
             return {
@@ -68,8 +65,21 @@ export function checkFnHasArgs(str){
     let fnInfo = str.match(regPropIsArgs)
     if (fnInfo) {
         let pramsArr = fnInfo[2].split(',')
-        // console.log(pramsArr, 'pramsArr', pramsArr[0]);
-        const prames = checkIsString(fnInfo[2], pramsArr) ? checkIsString(fnInfo[2], pramsArr) : pramsArr.map(item => Number(item))
+        let prames
+        // 检查 click方法里面的参数是否是字符串， 如果是字符串走则把引号替换为''  如果不是则转换成number值  这里只对字符串和number值做了校验
+        if (checkIsString(fnInfo[2], pramsArr)) {
+            prames = checkIsString(fnInfo[2], pramsArr)
+        } else {
+            prames = pramsArr.map(item => {
+                if (item==='$event') {
+                    return item
+                }
+                if (item === '') {
+                    return undefined
+                }
+                return Number(item)
+            })
+        }
         return {
             methodsName: fnInfo[1],
             prames
