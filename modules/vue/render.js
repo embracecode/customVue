@@ -14,24 +14,33 @@ export function updata (vm, key) {
         }
     })
 }
+let executedMoreExpress = new Function('vm', 'node','complileValue',`
+    with (vm) {
+        node.textContent = complileValue;
+    }
+`)
 function _render (vm, node, info) {
     // info {key: 'count', express: 'count + 1'} 
-    // console.log(info, 'info');
-    // let _r
-    // info.forEach(item => {
-    //     _r = new Function('vm', 'node',`
+    // 把拿到的表达式的值组合起来
+    /**
+     * info
+     * [{type: 'text', value: '字符串：'} ,{type: 'express', value: 'str'}]
+     */
+    // let complileValue = info.reduce((pre, {type, value})=>{
+    //     if (type === 'text') {
+    //         return pre + value
+    //     } else {
+    //         return pre + '${' + value + '}'
+    //     }
+    // }, '')
+    // console.log(info, 'info', complileValue);
+    // let _r = new Function('vm', 'node','complileValue',`
     //         with (vm) {
-    //             node.textContent = ${item.express}
+    //             node.textContent = ${complileValue};
     //         }
     //     `)
-    //     _r(vm, node)
-    // })
-    // const r = new Function('vm', 'node',`
-    //     with (vm) {
-    //         node.textContent = ${beforeValue}${express}${afterValue};
-    //     }
-    // `)
-
+    // _r(vm, node, complileValue)
+    // console.log(_r.toString())
     // 第一版 单个匹配表达式 xxxx{{ a }} xxxx 情况
     const { express, beforeValue, afterValue } = info
     const r = new Function('vm', 'node', 'beforeValue', 'afterValue',`
@@ -44,5 +53,6 @@ function _render (vm, node, info) {
         }
     `)
     r(vm, node, beforeValue, afterValue)
+    console.log(r.toString())
     
 }

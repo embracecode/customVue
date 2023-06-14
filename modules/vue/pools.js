@@ -38,13 +38,14 @@ export default function(vm, methdos){
     const { $nodes, $data } = vm
     const allNodes = $nodes.querySelectorAll('*')
     const { vClick } = vEvent
+    let allExecValue = []
     allNodes.forEach(node => {
         const vExpress = node.textContent
-        
+        allExecValue = executedText(vExpress)
         const expMatchTextvalue = vExpress.match(regExpAll)
         const regMatchExpress = vExpress.match(regExpress)
         const vEventVal = node.getAttribute(`@${vClick}`)
-        console.log(vEventVal, '事件值', vExpress.match(regExpress), expMatchTextvalue, 'regExpAll', $data);
+        // console.log(vEventVal, '事件值', vExpress.match(regExpress), expMatchTextvalue, 'regExpAll', $data);
         // if(expMatchValue){
         //     const expInfo = checkExpressIsIncludesData($data, expMatchValue[1].trim())
         //     expInfo && expressPools.set(node, expInfo)
@@ -67,7 +68,9 @@ export default function(vm, methdos){
             const expInfo = checkExpressIsIncludesDataAndText($data, expMatchTextvalue[2].trim(), expMatchTextvalue[1], expMatchTextvalue[3])
             expInfo && expressPools.set(node, expInfo)
         }
-
+        // if (allExecValue.length) {
+        //     expressPools.set(node, allExecValue)
+        // }
         // 匹配到的事件 加入到事件数据池
         if (vEventVal) {
             const handlerInfo = checkFnHasArgs(vEventVal)
@@ -87,4 +90,32 @@ export default function(vm, methdos){
             node.removeAttribute(`@${vClick}`)
         }
     });
+}
+
+function executedText(params) {
+    let allExecValue = []
+    let execValue
+    regExpress.lastIndex = 0
+    let lastIndex = 0
+    while (execValue = regExpress.exec(params)) {
+        let index = execValue.index
+        if (index > lastIndex) { // 文本
+            allExecValue.push({
+                type: 'text',
+                value: params.slice(lastIndex, index)
+            })
+        }
+        allExecValue.push({
+            type: 'express',
+            value: execValue[1].trim()
+        })
+        lastIndex = index + execValue[0].length
+    }
+    if (lastIndex < params.length) {
+        allExecValue.push({
+            type: 'text',
+            value: params.slice(lastIndex)
+        })
+    }
+    return allExecValue
 }
