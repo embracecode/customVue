@@ -1,6 +1,6 @@
 
 import { vEvent } from './shared/propsTypes'
-import { checkExpressIsIncludesData, checkExpressIsIncludesDataAndText, checkFnHasArgs } from './shared/utils'
+import { checkFnHasArgs, checkMoreExpressIsincludesDataKey } from './shared/utils'
 
 export const eventPools = new Map()
 
@@ -20,7 +20,7 @@ export const expressPools = new Map()
  * expressPools: [
  *      {
  *          h1: {
- *              key: count,
+ *              key: [count],
  *              express: count + 1
  *          }
  *      }
@@ -41,36 +41,11 @@ export default function(vm, methdos){
     let allExecValue = []
     allNodes.forEach(node => {
         const vExpress = node.textContent
-        allExecValue = executedText(vExpress)
-        const expMatchTextvalue = vExpress.match(regExpAll)
-        const regMatchExpress = vExpress.match(regExpress)
+        allExecValue = executedText($data, vExpress)
         const vEventVal = node.getAttribute(`@${vClick}`)
-        // console.log(vEventVal, '事件值', vExpress.match(regExpress), expMatchTextvalue, 'regExpAll', $data);
-        // if(expMatchValue){
-        //     const expInfo = checkExpressIsIncludesData($data, expMatchValue[1].trim())
-        //     expInfo && expressPools.set(node, expInfo)
-        // }
-        // 匹配到的表达式 加入到表达式数据池
-        // if (condition) {
-            
-        // }
-        // let expInfo = []
-        // if (regMatchExpress) {
-        //     regMatchExpress.forEach(item => {
-        //         const expMatchValue = item.match(regExp)
-        //         if(expMatchValue){
-        //             expInfo.push(checkExpressIsIncludesData($data, expMatchValue[1].trim()))
-        //         }
-        //     })
-        //     expInfo && expressPools.set(node, expInfo)
-        // }
-        if(expMatchTextvalue){
-            const expInfo = checkExpressIsIncludesDataAndText($data, expMatchTextvalue[2].trim(), expMatchTextvalue[1], expMatchTextvalue[3])
-            expInfo && expressPools.set(node, expInfo)
+        if (allExecValue.key) {
+            expressPools.set(node, allExecValue)
         }
-        // if (allExecValue.length) {
-        //     expressPools.set(node, allExecValue)
-        // }
         // 匹配到的事件 加入到事件数据池
         if (vEventVal) {
             const handlerInfo = checkFnHasArgs(vEventVal)
@@ -91,31 +66,35 @@ export default function(vm, methdos){
         }
     });
 }
-
-function executedText(params) {
+// 处理node节点里面的字符串  字符串{{num}}字符串{{count}}字符串
+function executedText(data, params) {
     let allExecValue = []
     let execValue
     regExpress.lastIndex = 0
     let lastIndex = 0
+    // 正表达式捕获
     while (execValue = regExpress.exec(params)) {
         let index = execValue.index
+        // 获取到的字符串
         if (index > lastIndex) { // 文本
-            allExecValue.push({
-                type: 'text',
-                value: params.slice(lastIndex, index)
-            })
+            allExecValue.push(JSON.stringify(params.slice(lastIndex, index)))
         }
-        allExecValue.push({
-            type: 'express',
-            value: execValue[1].trim()
-        })
+        // 获取的是{{}}花括号里面的内容
+        allExecValue.push(`_s(${execValue[1].trim()})`)
         lastIndex = index + execValue[0].length
     }
+    // 获取到的字符串
     if (lastIndex < params.length) {
-        allExecValue.push({
-            type: 'text',
-            value: params.slice(lastIndex)
-        })
+        allExecValue.push(JSON.stringify(params.slice(lastIndex)))
     }
-    return allExecValue
+    // 把 node节点   字符串{{num}}字符串{{count}}字符串 处理成想要的样式
+    /**
+     * {
+     *    obj = {  
+     *        key: [num,count],
+    *         express
+     *    }
+     */
+    let obj = checkMoreExpressIsincludesDataKey(data, allExecValue.join('+'))
+    return obj
 }

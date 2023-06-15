@@ -59,7 +59,31 @@ export function checkExpressIsIncludesDataAndText(data, express, beforeValue, af
         }
     }
 }
-
+// 判断{{a}}2222{{a+ 1}}大萨达 花括号里面的值是否包含data数据里面的key值
+export function checkMoreExpressIsincludesDataKey(data, express){
+    let obj = {}
+    let keyList = []
+    for(let key in data){
+        // express  是node节点里面的表达式  判断 表达式里面是否包含
+        if (express.includes(key) && express !== key) {
+            keyList.push(key)
+            obj = {  
+                key: keyList,
+                express
+            }
+        } else if (express.includes(key) && express === key) {
+            keyList.push(key)
+            obj = {
+                key: keyList,
+                express: key
+            }
+        } else if((!express.includes(key) && data[express] === undefined) ) {
+            //要做一个在表达式里面{{ aaaa }} 但是不在data里面验证
+            continue
+        }
+    }
+    return obj
+}
 // 检查获取到的@click 属性值里面是否 带参数 （value）
 export function checkFnHasArgs(str){
     let fnInfo = str.match(regPropIsArgs)

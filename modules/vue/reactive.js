@@ -9,7 +9,7 @@ export default function(vm, data){
             },
             set(newVal) {
                 vm.$data[key] = newVal
-                console.log(vm.$data[key], newVal)
+                console.log(vm.$data[key], newVal, key, '2222')
                 updata(vm, key)
             }
         })

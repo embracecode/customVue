@@ -2,7 +2,7 @@
     <div>
         <h1>{{ count + 1 }}</h1>
         <h1>{{ count + 2 }}</h1>
-        <h1>{{ count }} 22222 {{ num }}</h1>
+        <h1>字符串 {{ count }} 22222 {{ num }}</h1>
         <h1>{{ count }}</h1>
         <h2>字符串：{{ str }}</h2>
         <h2>无表达式</h2>
@@ -24,7 +24,8 @@
         },
         methods: {
             plus(value,a,b){
-                this.count  = this.count + value + a + b
+                this.count  = this.count + value + a + b;
+                this.num += 2
             },
             minus(value) {
                 console.log(this.count,value, '减法');
@@ -35,7 +36,8 @@
                 this.count += 100
             },
             strPlus(a, b){
-                this.str = this.str + a + b
+                this.str = this.str + a + b;
+                this.num = 6
             },
             noparams(e){
                 console.log(e);

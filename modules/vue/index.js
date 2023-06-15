@@ -1,6 +1,5 @@
-import { getFirstNodes } from "./shared/utils"
 import reactive from "./reactive"
-import pools, { eventPools, expressPools } from "./pools"
+import pools from "./pools"
 import event from './event'
 import { render } from './render'
 const Vue = { 
@@ -13,7 +12,7 @@ export function createApp(component){
 
     vm.mount = mount
     vm.$nodes = createNode(template)
-
+    vm._s = _s
     const init = () => {
         reactive(vm, data)
         pools(vm, methods)
@@ -34,5 +33,11 @@ function createNode(template){
 }
 function mount(el){
     document.querySelector(el).appendChild(this.$nodes)
+}
+function _s(value){
+    if (typeof valaue !== 'object') {
+        return  JSON.stringify(value)
+    }
+    return value
 }
 export default Vue

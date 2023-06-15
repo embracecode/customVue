@@ -3,23 +3,24 @@ import { expressPools } from "./pools";
 
 export function render (vm) {
     expressPools.forEach((info, node) => {
-        _render(vm, node, info)
+        _render(vm, node, info.express)
     })
 }
-
 export function updata (vm, key) {
     expressPools.forEach((info, node)=> {
-        if (info.key === key) {
-            _render(vm, node, info)
+        console.log(info, key, 'infokey')
+        if (info.key.includes(key)) {
+            _render(vm, node, info.express)
         }
     })
 }
-let executedMoreExpress = new Function('vm', 'node','complileValue',`
-    with (vm) {
-        node.textContent = complileValue;
-    }
-`)
 function _render (vm, node, info) {
+    let _r = new Function('node', `{
+        with(this){
+            node.textContent = ${info}
+        }
+    }`)
+    _r.call(vm, node)
     // info {key: 'count', express: 'count + 1'} 
     // 把拿到的表达式的值组合起来
     /**
@@ -42,17 +43,17 @@ function _render (vm, node, info) {
     // _r(vm, node, complileValue)
     // console.log(_r.toString())
     // 第一版 单个匹配表达式 xxxx{{ a }} xxxx 情况
-    const { express, beforeValue, afterValue } = info
-    const r = new Function('vm', 'node', 'beforeValue', 'afterValue',`
-        {
-            let a = '';
-            with (vm) {
-                a = ${express};
-            };
-            node.textContent = beforeValue + a + afterValue
-        }
-    `)
-    r(vm, node, beforeValue, afterValue)
-    console.log(r.toString())
+    // const { express, beforeValue, afterValue } = info
+    // const r = new Function('vm', 'node', 'beforeValue', 'afterValue',`
+    //     {
+    //         let a = '';
+    //         with (vm) {
+    //             a = ${express};
+    //         };
+    //         node.textContent = beforeValue + a + afterValue
+    //     }
+    // `)
+    // r(vm, node, beforeValue, afterValue)
+    // console.log(r.toString())
     
 }
